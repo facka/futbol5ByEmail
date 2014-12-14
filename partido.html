@@ -1,0 +1,347 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+
+    <title>Partido</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../css/cover.css" rel="stylesheet">
+    <link href="../css/jumbotron-narrow.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="site-wrapper">
+
+      <div class="site-wrapper-inner">
+
+        <ul class="nav nav-pills pull-left">
+          <li><a id="jugadorButton" href="/jugador"></a></li>
+        </ul>
+
+        <!-- Main jumbotron for a primary marketing message or call to action -->
+        <div class="jumbotron">
+          <div class="container">
+            <h1 id="nombrePartido"></h1>
+            <p id="infoPartido"></p>
+            <p>
+              <button id="botonVoy" class="btn btn-primary" style="display:none">
+                Voy
+              </button>
+              <button id="botonSuplente" class="btn btn-primary" style="display:none">
+                Suplente
+              </button>
+              <button id="botonMeBajo" class="btn btn-primary" style="display:none">
+                Me bajo
+              </button>
+            </p>
+            <div id="alertContainer"></div>
+          </div>
+        </div>
+
+        <div class="col-md-4 panel panel-default panelTitulares">
+          <div class="panel-heading">
+            <h3 class="panel-title">Titulares</h3>
+          </div>
+          <div class="panel-body">
+            <ul id="jugadoresContainer" class="list-group">
+
+            </ul>          
+          </div>
+        </div>  
+
+
+        <div class="col-md-4 panel panel-default panelSuplentes">
+          <div class="panel-heading">
+            <h3 class="panel-title">Suplentes</h3>
+          </div>
+          <div id="suplentesContainer" class="panel-body">
+          </div>
+        </div>  
+
+        <div class="col-md-4 panel panel-default panelNoVoy">
+          <div class="panel-heading">
+            <h3 class="panel-title">No van</h3>
+          </div>
+          <div id="nojueganContainer" class="panel-body">
+          </div>
+        </div>  
+
+      </div>
+
+    </div>
+    
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+    <script src="../js/docs.min.js"></script>
+    <script>
+      var AlertUtils = {
+          showSuccessAlert : function(title, message) {
+            $("#alertContainer").empty();
+            var node = $("<div id='successAlert' class='alert alert-success alert-dismissable'>"+
+              "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>"+
+              "<strong>"+title+": </strong>"+message+"</div>");
+            $("#alertContainer").append(node);
+          },
+          showErrorAlert : function(title, message) {
+            $("#alertContainer").empty();
+            var node = $("<div id='errorAlert' class='alert alert-danger alert-dismissable'>"+
+              "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>"+
+              "<strong>"+title+": </strong>"+message+"</div>");
+            $("#alertContainer").append(node);
+          }
+      };
+
+      var Loading = {
+          show : function() {
+            if ($("#loading").length > 0) {
+              return;
+            }
+            var node = $('<div id="loading" style="height:100%; width:100%; position:absolute; top: 0px; left: 0px;'+
+                    'background-color: rgba(100,100,100,0.5);"> '+
+              '<div style="text-align: center; margin-top: 25%;"><span><img src="images/loading.gif"></span> Loading...</div>'+
+              '</div>');
+            $("body").append(node); 
+          },
+          hide : function() {
+            $("#loading").remove();
+          }
+      };
+
+      var params = [], hash;
+      var q = document.URL.split('?')[1];
+      if(q != undefined){
+          q = q.split('&');
+          for(var i = 0; i < q.length; i++){
+              hash = q[i].split('=');
+              params.push(hash[1]);
+              params[hash[0]] = hash[1];
+          }
+      }
+
+      var currentUser;
+
+      $.ajax({
+            url : "/api/jugadores/"+params['user'],
+            type: "GET",
+            dataType: "json",
+            data : {},
+            success: function(data, textStatus, jqXHR) {
+                currentUser = data;
+                $('#jugadorButton').text(currentUser.name);
+                $('#jugadorButton').attr('href','/jugador?code='+params['user']);
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Jugador no encontrado: "+textStatus);
+                AlertUtils.showErrorAlert("Error","Jugador no encontrado");
+            }
+      });
+
+
+      $('#botonVoy').click(function() {
+          Loading.show();
+          $.ajax({
+            url : "/api/partidos/"+params['code']+"/jugadores",
+            type: "POST",
+            dataType: "json",
+            data : {user: params['user'],
+                    as : "titular"
+                   },
+            success: function(data, textStatus, jqXHR) {
+               var found = false;
+               for (var index in data.jugadores) {
+                  var jugador = data.jugadores[index];
+                  if (jugador.email === currentUser.email) {
+                      found = true;
+                      break;
+                  }
+               }
+               if (found) {
+                  AlertUtils.showSuccessAlert("Perfecto!","Sos parte de los titulares.");
+               }
+               else {
+                  AlertUtils.showSuccessAlert("No hay vacantes!","Quedaste anotado como suplente.");
+               }
+                
+               refresh();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Usuario no agregado");
+                AlertUtils.showErrorAlert("Error","Jugador no agregado al partido!");
+            }
+          });
+
+      });
+  
+
+      $('#botonSuplente').click(function() {
+          Loading.show();
+          $.ajax({
+            url : "/api/partidos/"+params['code']+"/jugadores",
+            type: "POST",
+            dataType: "json",
+            data : {user: params['user'],
+                    as : "suplente"
+                   },
+            success: function(data, textStatus, jqXHR) {
+                console.log("Usuario agregado");
+                AlertUtils.showSuccessAlert("Perfecto!","Sos parte de los suplentes.");
+                refresh();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Usuario no agregado");
+                AlertUtils.showErrorAlert("Error","Jugador no agregado al partido!");
+            }
+          });
+
+      });
+
+      $('#botonMeBajo').click(function() {
+          Loading.show();
+          $.ajax({
+            url : "/api/partidos/"+params['code']+"/jugadores",
+            type: "POST",
+            dataType: "json",
+            data : {user: params['user'],
+                    as : "nojuega"
+                   },
+            success: function(data, textStatus, jqXHR) {
+                console.log("Usuario agregado");
+                AlertUtils.showSuccessAlert("Que lastima!","Te esperamos el proximo partido.");
+                refresh();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Usuario no agregado");
+                AlertUtils.showErrorAlert("Error","Jugador no agregado al partido!");
+            }
+          });
+
+      });
+
+      var refresh = function() {
+        Loading.show();
+        $.ajax({
+            url : "/api/partidos/"+params['code'],
+            type: "GET",
+            dataType: "json",
+            data : {},
+            success: function(data, textStatus, jqXHR) {
+                console.log(data);
+                $('#nombrePartido').text(data.nombre);
+                var infoPartido = "El partido es en la cancha "+data.cancha+", el dia "+data.fecha+" a las "+data.hora+" hs. Precio: "+data.precio+".";
+                $('#infoPartido').text(infoPartido);
+
+                $("#jugadoresContainer").empty();
+                var count = 0;
+                for (var i in data.jugadores) {
+                    var jugador = data.jugadores[i];
+                    //var row = $("<div class='row'><p>"+jugador.name+": "+jugador.email+"</p></div>");
+
+                    var row = $("<li class='list-group-item'><span class='badge'>"+jugador.estrellas+"</span>"+
+                                  jugador.name+"</li>");
+
+                    $("#jugadoresContainer").append(row);
+                    count++;
+                }
+                $("#suplentesContainer").empty();
+                for (var i in data.suplentes) {
+                    var jugador = data.suplentes[i];
+
+                    var row = $("<li class='list-group-item'><span class='badge'>"+jugador.estrellas+"</span>"+
+                                  jugador.name+"</li>");
+
+                    $("#suplentesContainer").append(row);
+                }
+                $("#nojueganContainer").empty();
+                for (var i in data.nojuegan) {
+                    var jugador = data.nojuegan[i];
+
+                    var row = $("<li class='list-group-item'><span class='badge'>"+jugador.estrellas+"</span>"+
+                                  jugador.name+"</li>");
+
+                    $("#nojueganContainer").append(row);
+                }
+                while (count < data.cantidadJugadores) {
+                    var row = $("<li class='list-group-item'>?</li>");
+
+                    $("#jugadoresContainer").append(row);
+                    count++; 
+                }
+
+                refreshButtons();
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Partido no encontrado: "+textStatus);
+                AlertUtils.showErrorAlert("Error","Partido no encontrado!");
+            }
+          });
+      };
+
+      var refreshButtons = function(){
+        Loading.show();
+        $.ajax({
+            url : "/api/partidos/"+params['code']+"/voy?user="+params['user'],
+            type: "GET",
+            dataType: "json",
+            data : {},
+            success: function(data, textStatus, jqXHR) {
+                if (data.as) {
+                  if (data.as == "titular") {
+                    $("#botonVoy").hide();
+                    $("#botonSuplente").show();
+                    $("#botonMeBajo").show();
+                  }
+                  if (data.as == "suplente"){
+                    $("#botonVoy").show();
+                    $("#botonSuplente").hide();
+                    $("#botonMeBajo").show();
+                  }
+                  if (data.as == "nojuega"){
+                    $("#botonVoy").show();
+                    $("#botonSuplente").show();
+                    $("#botonMeBajo").hide();
+                  }
+                }
+                else {
+                  $("#botonVoy").show();
+                  $("#botonSuplente").show();
+                  $("#botonMeBajo").show(); 
+                }
+                Loading.hide();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              AlertUtils.showErrorAlert("Error","Usuario no encontrado!"); 
+              Loading.hide();
+            }
+          });
+      };
+
+      refresh();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+
+    <title>Jugador</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../css/cover.css" rel="stylesheet">
+    <link href="../css/jumbotron-narrow.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="site-wrapper">
+
+      <div class="site-wrapper-inner">
+
+        <!-- Main jumbotron for a primary marketing message or call to action -->
+        <div class="jumbotron">
+          <div class="container">
+            <h1 id="nombreJugador"></h1>
+              <div id="activatedAlert" class="alert alert-success alert-dismissable" style="display:none">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <strong id="activatedAlertTitle"></strong><div id="activatedAlertDescription"></div>
+              </div>
+            <p class="lead">
+              <button id="miPerfil" class="btn btn-primary btn-lg">
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+    <script src="../js/docs.min.js"></script>
+    <script>
+      var params = [], hash;
+      var q = document.URL.split('?')[1];
+      if(q != undefined){
+          q = q.split('&');
+          for(var i = 0; i < q.length; i++) {
+              hash = q[i].split('=');
+              params.push(hash[1]);
+              params[hash[0]] = hash[1];
+          }
+      }
+      
+
+      $.ajax({
+            url : "/api/jugadores/"+params['code'],
+            type: "GET",
+            dataType: "json",
+            data : {},
+            success: function(data, textStatus, jqXHR) {
+                console.log(data);
+                $('#nombreJugador').text(data.name);
+                var row = $("<div class='row'><div class='col-md-4'><h2>"+data.liga+"</h2></div></div>");
+                $("#jugadoresContainer").append(row);
+                $("#activatedAlert").show();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Partido no encontrado: "+textStatus);
+            }
+          });
+
+        $('#miPerfil').click(function(){
+          window.location.href = "/jugador?code="+params['code'];
+      });
+
+      var Labels = {
+          labels : {
+            pageTitle : {
+              es: "Futbol5",
+              'en-US': "Soccer5"
+            },
+            profileButton : {
+              es: "Mi Perfil",
+              'en-US': "My profile"
+            },
+            activatedAlertTitle : {
+              es: "Has sido activado!",
+              'en-US': "You've been activated!"
+            },
+            activatedAlertDescription : {
+              es: "Cada vez que se cree un partido en las ligas que estas anotado recibiras un mail para aceptar la asistencia al mismo.",
+              'en-US': "Each time that a match is created in the leagues that you are subscribed, you will get an email to confirm assistence."
+            },
+          },
+          getLabel : function(labelId) {
+            var language = navigator.language;
+            return Labels.labels[labelId][language] || Labels.labels[labelId].es;
+          }
+      };
+
+       $("#miPerfil").text(Labels.getLabel("profileButton"));
+       $("#activatedAlertDescription").text(Labels.getLabel("activatedAlertDescription"));
+       $("#activatedAlertTitle").text(Labels.getLabel("activatedAlertTitle"));
+      
+    </script>
+  </body>
+</html>

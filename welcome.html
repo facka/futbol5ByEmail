@@ -1,0 +1,622 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+
+    <title>Futbol5</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../css/cover.css" rel="stylesheet">
+    <link href="../css/default.css" rel="stylesheet">
+    <link href="../css/default.date.css" rel="stylesheet">
+    <link href="../css/default.time.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="site-wrapper">
+
+      <div class="site-wrapper-inner">
+
+        <div class="cover-container">
+
+          <div class="inner cover">
+            <h1 id="pageTitle" class="cover-heading"></h1>
+            <p id="pageSubtitle" class="lead"></p>
+            <p class="lead">
+              <button id="signInButton" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#registrarseModal">
+              </button>
+            </p>
+            <p class="lead">
+              <button id="createMatchButton" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#partidoModal">
+              </button>
+            </p>
+            <div id="alertContainer"></div>
+          </div>
+
+          <div class="mastfoot">
+            <div class="inner">
+              <p>Developed by Facka.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="registrarseModal" tabindex="-1" role="dialog" aria-labelledby="signInModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="signInModalLabel">Registrarse</h4>
+            <p id="signInModalDescription">Complete sus datos y escriba el nombre de la Liga a la cual se quiere subscribir.</p>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal" role="form">
+              <div class="form-group">
+                <label id="userNameLabel" for="inputUserName" class="col-sm-2 control-label">Nombre</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="inputUserName" placeholder="Nombre">
+                </div>
+              </div>
+              <div class="form-group">
+                <label id="emailLabel" for="inputEmail" class="col-sm-2 control-label">Email</label>
+                <div class="col-sm-10">
+                  <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+                </div>
+              </div>
+              <div class="form-group">
+                <label id="ligaLabel" for="inputLiga" class="col-sm-2 control-label">Liga</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="inputLiga" placeholder="Liga">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button id="cancelSignInButton" type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            <button id="acceptSignInButton" type="button" class="btn btn-primary">Enviar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+   
+
+    <!-- Modal     "nombre","cancha","fecha","hora","precio","liga"    -->
+    <div class="modal fade" id="partidoModal" tabindex="-1" role="dialog" aria-labelledby="partidoModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="partidoModalLabel">Nuevo partido</h4>
+            <p id="partidoModalSubTitle">Complete los datos del partido y escriba el nombre de su Liga para que todos los subscriptos a la Liga reciban las notificaciones.</p>
+          </div>
+          <div class="modal-body">
+             <form class="form-horizontal" role="form">
+              <div class="form-group">
+                <label id="matchNameLabel" for="inputNombre" class="col-sm-2 control-label">Nombre</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="inputNombre" placeholder="Nombre del partido">
+                </div>
+              </div>
+              <div class="form-group">
+                <label id="matchPlaceLabel" for="inputCancha" class="col-sm-2 control-label">Cancha</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="inputCancha" placeholder="Cancha">
+                </div>
+              </div>
+              <div class="form-group">
+                <label id="matchDateLabel" for="inputFecha" class="col-sm-2 control-label">Fecha</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control datepicker" id="inputFecha" placeholder="Fecha">
+                </div>
+              </div>
+              <div class="form-group">
+                <label id="matchTimeLabel" for="inputHora" class="col-sm-2 control-label">Hora</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control timepicker" id="inputHora" placeholder="Hora">
+                </div>
+              </div>
+              <div class="form-group">
+                <label id="matchPriceLabel" for="inputPrecio" class="col-sm-2 control-label">Precio</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="inputPrecio" placeholder="Precio por jugador">
+                </div>
+              </div>
+              <div class="form-group">
+                <label id="matchNumberOfPlayersLabel" for="inputCantidadJugadores" class="col-sm-2 control-label">Cantidad de Jugadores</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="inputCantidadJugadores" placeholder="Cantidad de Jugadores">
+                </div>
+              </div>
+              <div class="form-group">
+                <label id="matchLeagueLabel" for="inputLigaPartido" class="col-sm-2 control-label">Liga</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="inputLigaPartido" placeholder="Liga">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button id="cancelPartidoButton" type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            <button id="enviarPartidoButton" type="button" class="btn btn-primary">Enviar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+    <script src="../js/docs.min.js"></script>
+    <script src="../js/picker.js"></script>
+    <script src="../js/picker.date.js"></script>
+    <script src="../js/picker.time.js"></script>
+    
+    <script>
+
+      var Loading = {
+          show : function() {
+            if ($("#loading").length > 0) {
+              return;
+            }
+            var node = $('<div id="loading" style="height:100%; width:100%; position:absolute; top: 0px; left: 0px;'+
+                    'background-color: rgba(100,100,100,0.5);"> '+
+              '<div style="text-align: center; margin-top: 25%;"><span><img src="images/loading.gif"></span> Loading...</div>'+
+              '</div>');
+            $("body").append(node); 
+          },
+          hide : function() {
+            $("#loading").remove();
+          }
+      };
+
+      $('#inputUserName').change(function(){
+        $('#inputUserName').removeClass('required');
+      });
+
+      $('#inputEmail').change(function(){
+        $('#inputEmail').removeClass('required');
+      });
+
+      $('#inputLiga').change(function(){
+        $('#inputLiga').removeClass('required');
+      });
+
+      $('#acceptSignInButton').click(function(){
+
+          $("#successAlert").hide();
+          $("#errorAlert").hide();
+          var invalid = false;
+          if (!$('#inputUserName').val()) {
+            $('#inputUserName').val("");
+            $('#inputUserName').addClass('required');
+            $('#inputUserName').attr('placeholder',"Name is missing...");
+            invalid = true;
+          }       
+          if (!$('#inputEmail').val()) {
+            $('#inputEmail').val("");
+            $('#inputEmail').addClass('required');
+            $('#inputEmail').attr('placeholder',"Email is missing...");
+            invalid = true;
+          }             
+          if (!$('#inputLiga').val()) {
+            $('#inputLiga').val("");
+            $('#inputLiga').addClass('required');
+            $('#inputLiga').attr('placeholder',"League is missing...");
+            invalid = true;
+          }
+          if (!invalid) {
+            Loading.show();
+            $.ajax({
+              url : "/api/registrarse",
+              type: "POST",
+              dataType: "json",
+              data : {nombre: $('#inputUserName').val(),
+                      email: $('#inputEmail').val(),
+                      liga: $('#inputLiga').val(),
+                      language: navigator.language
+                     },
+              success: function(data, textStatus, jqXHR) {
+                  if (!data.error) {
+                    console.log("User registered!");
+                    AlertUtils.showSuccessAlert(Labels.getLabel("successSignInAlertTitle"),Labels.getLabel("successSignInAlertDescription"));
+                    $('#registrarseModal').modal('hide');
+                  }
+                  else {
+                    console.log("User registration failed!");
+
+                    if (data.error === "EXISTS") {
+                      $('#inputEmail').addClass('required');
+                      var lastValue = $('#inputEmail').val();
+                      $('#inputEmail').val("");
+                      $('#inputEmail').attr('placeholder',"'"+lastValue + "' is already registered.");  
+                    }
+
+                    if (data.error === "EMAIL") {
+                      $('#inputEmail').addClass('required');
+                      var lastValue = $('#inputEmail').val();
+                      $('#inputEmail').val("");
+                      $('#inputEmail').attr('placeholder',"'"+lastValue + "' is not a valid email.");  
+                    }
+                    
+                  }
+                  Loading.hide();
+              },
+              error: function (jqXHR, textStatus, errorThrown) {
+                  console.log("User registration failed!");
+                    AlertUtils.showErrorAlert(Labels.getLabel("wrongEmailAlertTitle"),Labels.getLabel("unexpectedException"));
+                  $('#registrarseModal').modal('hide');
+                  Loading.hide();
+              }
+            });
+          }
+      });
+
+      
+      $('#inputNombre').change(function(){
+        $('#inputNombre').removeClass('required');
+      });
+      $('#inputCancha').change(function(){
+        $('#inputCancha').removeClass('required');
+      });
+      $('#inputFecha').change(function(){
+        $('#inputFecha').removeClass('required');
+      });
+      $('#inputHora').change(function(){
+        $('#inputHora').removeClass('required');
+      });
+      $('#inputPrecio').change(function(){
+        $('#inputPrecio').removeClass('required');
+      });
+      $('#inputCantidadJugadores').change(function(){
+        $('#inputCantidadJugadores').removeClass('required');
+      });
+      $('#inputLigaPartido').change(function(){
+        $('#inputLigaPartido').removeClass('required');
+      });
+
+      $('#enviarPartidoButton').click(function(){
+          $("#successAlert").hide();
+          $("#errorAlert").hide();
+          var invalid = false;
+          if (!$('#inputNombre').val()) {
+            $('#inputNombre').val("");
+            $('#inputNombre').addClass('required');
+            $('#inputNombre').attr('placeholder',Labels.getLabel('matchNamePlaceHolderError'));
+            invalid = true;
+          }       
+          if (!$('#inputCancha').val()) {
+            $('#inputCancha').val("");
+            $('#inputCancha').addClass('required');
+            $('#inputCancha').attr('placeholder',Labels.getLabel('matchPlacePlaceHolderError'));
+            invalid = true;
+          }             
+          if (!$('#inputFecha').val()) {
+            $('#inputFecha').val("");
+            $('#inputFecha').addClass('required');
+            $('#inputFecha').attr('placeholder',Labels.getLabel('matchDatePlaceHolderError'));
+            invalid = true;
+          }             
+          if (!$('#inputHora').val()) {
+            $('#inputHora').val("");
+            $('#inputHora').addClass('required');
+            $('#inputHora').attr('placeholder',Labels.getLabel('matchTimePlaceHolderError'));
+            invalid = true;
+          }             
+          if (!$('#inputPrecio').val()) {
+            $('#inputPrecio').val("");
+            $('#inputPrecio').addClass('required');
+            $('#inputPrecio').attr('placeholder',Labels.getLabel('matchPricePlaceHolderError'));
+            invalid = true;
+          }             
+          if (!$('#inputCantidadJugadores').val()) {
+            $('#inputCantidadJugadores').val("");
+            $('#inputCantidadJugadores').addClass('required');
+            $('#inputCantidadJugadores').attr('placeholder',Labels.getLabel('matchNumberOfPlayersPlaceHolderError'));
+            invalid = true;
+          }else {
+            var value = parseInt($('#inputCantidadJugadores').val());
+            if (typeof value !== "number") {
+                $('#inputCantidadJugadores').val("");
+                $('#inputCantidadJugadores').addClass('required');
+                $('#inputCantidadJugadores').attr('placeholder',Labels.getLabel('matchNumberOfPlayersPlaceHolderError'));
+            }
+          }             
+          if (!$('#inputLigaPartido').val()) {
+            $('#inputLigaPartido').val("");
+            $('#inputLigaPartido').addClass('required');
+            $('#inputLigaPartido').attr('placeholder',Labels.getLabel('matchLeaguePlaceHolderError'));
+            invalid = true;
+          }
+          if (!invalid) {   
+            Loading.show();
+            $('#partidoModal').modal('hide');
+            $.ajax({
+              url : "/api/partidos",
+              type: "POST",
+              dataType: "json",
+              data : {nombre: $('#inputNombre').val(),
+                      cancha: $('#inputCancha').val(),
+                      fecha: $('#inputFecha').val(),
+                      hora: $('#inputHora').val(),
+                      precio: $('#inputPrecio').val(),
+                      cantidadJugadores: $('#inputCantidadJugadores').val(),
+                      liga: $('#inputLigaPartido').val(),
+                      language: navigator.language
+                     },
+              success: function(data, textStatus, jqXHR) {
+                  console.log("Partido creado!");
+                  AlertUtils.showSuccessAlert(Labels.getLabel("successPartidoAlertTitle"),Labels.getLabel("successPartidoAlertDescription"));
+                  Loading.hide();
+              },
+              error: function (jqXHR, textStatus, errorThrown) {
+                  console.log("Fallo la creacion del partido");
+                  AlertUtils.showErrorAlert(Labels.getLabel("wrongPartidoAlertTitle"),Labels.getLabel("wrongPartidoAlertDescription"));
+                  Loading.hide();
+              }
+            });
+          }
+      });
+
+      var AlertUtils = {
+          showSuccessAlert : function(title, message) {
+            $("#alertContainer").empty();
+            var node = $("<div id='successAlert' class='alert alert-success alert-dismissable'>"+
+              "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>"+
+              "<strong>"+title+": </strong>"+message+"</div>");
+            $("#alertContainer").append(node);
+          },
+          showErrorAlert : function(title, message) {
+            $("#alertContainer").empty();
+            var node = $("<div id='errorAlert' class='alert alert-danger alert-dismissable'>"+
+              "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>"+
+              "<strong>"+title+": </strong>"+message+"</div>");
+            $("#alertContainer").append(node);
+          }
+      };
+
+      var Labels = {
+          labels : {
+            pageTitle : {
+              es: "Futbol5",
+              'en-US': "Soccer5"
+            },
+            pageSubtitle : {
+              es: "Organizar un partido de futbol5 nunca fue tan simple",
+              'en-US': "A page where organizing friendly soccer5 matchs is simple"
+            },
+            signInButton : {
+              es: "Registrarse",
+              'en-US': "Sign In"
+            },            
+            createMatchButton : {
+              es: "Crear Partido",
+              'en-US': "Create Match"
+            },
+            successSignInAlertTitle : {
+              es: "Perfecto!",
+              'en-US': "Perfect!"
+            },
+            successSignInAlertDescription : {
+              es: "Te enviamos un mail con un link para que actives tu usuario.",
+              'en-US': "We have sent you an email to activate your user."
+            },
+            successPartidoAlertTitle : {
+              es: "Partido creado!",
+              'en-US': "Match created!"
+            },
+            successPartidoAlertDescription : {
+              es: "Se ha enviado un mail a todos los usuarios inscriptos en la liga.",
+              'en-US': "An email has been sent to the players who are member of the league."
+            },
+            wrongEmailAlertTitle : {
+              es: "Ups!",
+              'en-US': "Ups!"
+            },
+            wrongEmailAlertDescription : {
+              es: " No se pudo enviar el mail. Por favor ingrese un mail válido.",
+              'en-US': "We couldn't send the email. Please set a valid email."
+            },
+            wrongPartidoAlertTitle : {
+              es: "Ups!",
+              'en-US': "Ups!"
+            },
+            wrongPartidoAlertDescription : {
+              es: " No se pudo crear el partido.",
+              'en-US': "We couldn't create the match."
+            },
+            signInModalLabel: {
+              es: "Registrarse",
+              'en-US': "Sign In"
+            },
+            signInModalDescription : {
+              es: "Complete sus datos y escriba el nombre de la Liga a la cual se quiere subscribir.",
+              'en-US': "Complete your info and write a name of the league at which you want to be subscribed."
+            },
+            userNameLabel : {
+              es: "Nombre",
+              'en-US': "Name"
+            },
+            emailLabel : {
+              es: "Email",
+              'en-US': "Email"
+            },
+            ligaLabel : {
+              es: "Liga",
+              'en-US': "League"
+            },
+            cancel : {
+              es: "Cancelar",
+              'en-US': "Cancel"
+            },
+            accept : {
+              es: "Aceptar",
+              'en-US': "Accept"
+            },
+            unexpectedException :{
+              es: "Error inesperado",
+              'en-US' : "Unexpected error"
+            },
+            partidoModalLabel: {
+              es: "Nuevo partido",
+              'en-US' : "New Match"
+            },
+            partidoModalSubTitle : {
+              es: "Complete los datos del partido y escriba el nombre de su Liga para que todos los subscriptos a la Liga reciban las notificaciones.",
+              'en-US' : "Complete the info of the match and put the name of a League, so subcripted user know about this match."
+            },
+            matchName : {
+              es: "Nombre",
+              'en-US' : "Name"
+            },
+            matchPlace: {
+              es: "Lugar",
+              'en-US' : "Place"
+            },
+            matchDate :{
+              es: "Fecha",
+              'en-US' : "Date"
+            },
+            matchTime: {
+              es: "Hora",
+              'en-US' : "Time"
+            },
+            matchPrice : {
+              es: "Precio",
+              'en-US' : "Price"
+            },
+            matchLeague: {
+              es: "Liga",
+              'en-US' : "League"
+            },
+            matchNumberOfPlayers: {
+              es: "N° jugadores",
+              'en-US' : "# players"
+            },
+            matchNamePlaceHolder : {
+              es: "Nombre",
+              'en-US' : "Name"
+            },
+            matchPlacePlaceHolder: {
+              es: "Lugar",
+              'en-US' : "Place"
+            },
+            matchDatePlaceHolder :{
+              es: "Fecha",
+              'en-US' : "Date"
+            },
+            matchTimePlaceHolder: {
+              es: "Hora",
+              'en-US' : "Time"
+            },
+            matchPricePlaceHolder : {
+              es: "Precio",
+              'en-US' : "Price"
+            },
+            matchLeaguePlaceHolder: {
+              es: "Liga",
+              'en-US' : "League"
+            },
+            matchNumberOfPlayersPlaceHolder: {
+              es: "N° jugadores",
+              'en-US' : "# players"
+            },
+            matchNamePlaceHolderError : {
+              es: "Ingrese el Nombre...",
+              'en-US' : "Name is missing..."
+            },
+            matchPlacePlaceHolderError: {
+              es: "Ingrese el Lugar...",
+              'en-US' : "Place is missing..."
+            },
+            matchDatePlaceHolderError :{
+              es: "Ingrese la Fecha...",
+              'en-US' : "Date is missing..."
+            },
+            matchTimePlaceHolderError: {
+              es: "Ingrese la Hora...",
+              'en-US' : "Time is missing..."
+            },
+            matchPricePlaceHolderError : {
+              es: "Ingrese el Precio...",
+              'en-US' : "Price is missing..."
+            },
+            matchLeaguePlaceHolderError: {
+              es: "Ingrese la Liga...",
+              'en-US' : "League is missing..."
+            },
+            matchNumberOfPlayersPlaceHolderError: {
+              es: "Ingrese el N° de jugadores...",
+              'en-US' : "# players is missing..."
+            }
+          },
+          getLabel : function(labelId) {
+            var language = navigator.language;
+            return Labels.labels[labelId][language] || Labels.labels[labelId].es;
+          }
+      };
+
+      //Set labels
+      $("#pageTitle").text(Labels.getLabel("pageTitle"));
+      $("#pageSubtitle").text(Labels.getLabel("pageSubtitle"));
+      $("#signInButton").text(Labels.getLabel("signInButton"));
+      $("#createMatchButton").text(Labels.getLabel("createMatchButton"));
+      $("#signInModalLabel").text(Labels.getLabel("signInModalLabel"));
+      $("#signInModalDescription").text(Labels.getLabel("signInModalDescription"));
+      $("#userNameLabel").text(Labels.getLabel("userNameLabel"));
+      $("#emailLabel").text(Labels.getLabel("emailLabel"));
+      $("#ligaLabel").text(Labels.getLabel("ligaLabel"));
+      $("#inputUserName").attr('placeholder',Labels.getLabel("userNameLabel"));
+      $("#inputEmail").attr('placeholder',Labels.getLabel("emailLabel"));
+      $("#inputLiga").attr('placeholder',Labels.getLabel("ligaLabel"));
+      $("#acceptSignInButton").text(Labels.getLabel("accept"));
+      $("#cancelSignInButton").text(Labels.getLabel("cancel"));
+      $("#cancelPartidoButton").text(Labels.getLabel("cancel"));
+      $("#enviarPartidoButton").text(Labels.getLabel("accept"));
+      $("#matchNameLabel").text(Labels.getLabel("matchName"));
+      $("#matchPlaceLabel").text(Labels.getLabel("matchPlace"));
+      $("#matchDateLabel").text(Labels.getLabel("matchDate"));
+      $("#matchTimeLabel").text(Labels.getLabel("matchTime"));
+      $("#matchPriceLabel").text(Labels.getLabel("matchPrice"));
+      $("#matchNumberOfPlayersLabel").text(Labels.getLabel("matchNumberOfPlayers"));
+      $("#matchLeagueLabel").text(Labels.getLabel("matchLeague"));
+      $("#inputNombre").attr('placeholder',Labels.getLabel('matchNamePlaceHolder'));
+      $("#inputCancha").attr('placeholder',Labels.getLabel('matchPlacePlaceHolder'));
+      $("#inputFecha").attr('placeholder',Labels.getLabel('matchDatePlaceHolder'));
+      $("#inputHora").attr('placeholder',Labels.getLabel('matchTimePlaceHolder'));
+      $("#inputPrecio").attr('placeholder',Labels.getLabel('matchPricePlaceHolder'));
+      $("#inputCantidadJugadores").attr('placeholder',Labels.getLabel('matchNumberOfPlayersPlaceHolder'));
+      $("#inputLigaPartido").attr('placeholder',Labels.getLabel('matchLeaguePlaceHolder'));
+      
+
+
+      $('.datepicker').pickadate();
+      $('.timepicker').pickatime();
+    </script>
+  </body>
+</html>

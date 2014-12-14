@@ -1,0 +1,29 @@
+{
+  "name": "Futbol5-2",
+  "subdomain": "futbol5-2",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "version": "1.0.0-0",
+  "engines": {
+    "node": "0.8.x"
+  },
+  "dependencies": {
+    "express": "3.2.6",
+    "socket.io": "0.9.14",
+    "nodemailer": "~0.6.1",
+    "chance": "~0.5.5",
+    "usergrid": "0.10.7",
+    "locale": "0.0.15",
+    "node-schedule": "~0.1.13"
+  },
+  "description": "None",
+  "main": "server.js",
+  "devDependencies": {},
+  "repository": "",
+  "keywords": [
+    "futbol"
+  ],
+  "author": "Facundo Crego",
+  "license": "BSD"
+}

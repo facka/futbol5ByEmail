@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+
+    <title>Liga</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../css/cover.css" rel="stylesheet">
+    <link href="../css/jumbotron-narrow.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="site-wrapper">
+
+      <div class="site-wrapper-inner">
+
+        <!-- Main jumbotron for a primary marketing message or call to action -->
+        <div class="jumbotron">
+          <div class="container">
+            <h1 id="nombreLiga"></h1>
+            <div id="alertContainer"></div>
+            <div>
+              <h2>Jugadores</h2>
+              <div id="jugadoresContainer"></div>
+              <h2>Admins</h2>
+              <div id="adminsContainer"></div>
+            </div>
+            <div>
+              <h2>Partidos</h2>
+              <div id="partidosContainer"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+    <script src="../js/docs.min.js"></script>
+    <script src="../js/jquery.raty.js"></script>
+    <script>
+      var params = [], hash;
+      var q = document.URL.split('?')[1];
+      if(q != undefined){
+          q = q.split('&');
+          for(var i = 0; i < q.length; i++) {
+              hash = q[i].split('=');
+              params.push(hash[1]);
+              params[hash[0]] = hash[1];
+          }
+      }
+
+      $.ajax({
+        url : "/api/ligas/"+params['name'],
+        type: "GET",
+        dataType: "json",
+        data : {},
+        success: function(data, textStatus, jqXHR) {
+            console.log(data);
+            $('#nombreLiga').text(data.name);
+            for (var index in data.jugadores) {
+              var row = $("<div class='row'><p>"+data.jugadores[index]+"</p></div>");
+              $("#jugadoresContainer").append(row);  
+            }
+            for (var index in data.partidos) {
+              var partidoCode = data.partidos[index];
+              var row = $("<div class='row'><div><p id='partido"+partidoCode+"'>"+data.partidos[index]+"</p></div></div>");
+              $("#partidosContainer").append(row);  
+              var onSuccessGettingPartido = function(partidoCode, partido) {
+                $("#partido"+partidoCode).text(partido.fecha +" - "+partido.hora+" - "+partido.nombre);
+              };
+              var onErrorGettingPartido = function(code, error) {
+                console.log(error+": "+code);
+              };
+              getPartido(partidoCode, onSuccessGettingPartido, onErrorGettingPartido);
+            }
+            for (var index in data.admins) {
+              var row = $("<div class='row'><div class='col-md-4'><p>"+data.admins[index]+"</p></div></div>");
+              $("#adminsContainer").append(row);  
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log("Liga no encontrada: "+textStatus);
+            AlertUtils.showErrorAlert("Error","Liga no encontrada");
+        }
+      });
+      
+      var getPartido = function(code, success, error) {
+        $.ajax({
+          url : "/api/partidos/"+code,
+          type: "GET",
+          dataType: "json",
+          data : {},
+          success: function(data, textStatus, jqXHR) {
+              success(code, data);
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+              error(code, "Error al buscar partido");
+          }
+        });
+      };    
+
+      $.ajax({
+        url : "/api/jugadores/"+params['user'],
+        type: "GET",
+        dataType: "json",
+        data : {},
+        success: function(data, textStatus, jqXHR) {
+            console.log(data);
+            //TODO something with user data
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log("Jugador no encontrado: "+textStatus);
+            AlertUtils.showErrorAlert("Error","Jugador no encontrado");
+        }
+      });
+
+      var AlertUtils = {
+          showSuccessAlert : function(title, message) {
+            $("#alertContainer").empty();
+            var node = $("<div id='successAlert' class='alert alert-success alert-dismissable'>"+
+              "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>"+
+              "<strong>"+title+": </strong>"+message+"</div>");
+            $("#alertContainer").append(node);
+          },
+          showErrorAlert : function(title, message) {
+            $("#alertContainer").empty();
+            var node = $("<div id='errorAlert' class='alert alert-danger alert-dismissable'>"+
+              "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>"+
+              "<strong>"+title+": </strong>"+message+"</div>");
+            $("#alertContainer").append(node);
+          }
+      };
+
+      var Labels = {
+          labels : {
+            
+          },
+          getLabel : function(labelId) {
+            var language = navigator.language;
+            return Labels.labels[labelId][language] || Labels.labels[labelId].es;
+          }
+      };
+      
+    </script>
+  </body>
+</html>
